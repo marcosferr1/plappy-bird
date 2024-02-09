@@ -65,8 +65,7 @@ function jump() {
   if (!gameOver) {
     velocity = jumpStrength;
 
-    jumpSound.currentTime = 0;
-    jumpSound.play();
+
   } else {
     reset();
   }
@@ -76,15 +75,21 @@ function jump() {
 document.addEventListener("keydown", function (event) {
   if (event.code === "Space") {
     jump();
+    jumpSound.currentTime = 0;
+    jumpSound.play();
   }
 });
 canvas.addEventListener("touchstart", function () {
   jump();
+  jumpSound.currentTime = 0;
+  jumpSound.play();
 });
 
 // Manejador de eventos para saltar al hacer clic en la pantalla
 canvas.addEventListener("click", function () {
   jump();
+  jumpSound.currentTime = 0;
+  jumpSound.play();
 });
 
 // Función para dibujar el pájaro
