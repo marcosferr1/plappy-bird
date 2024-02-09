@@ -16,7 +16,7 @@ var score = 0;
 
 function resizeCanvas() {
   canvas.width = window.innerWidth; // Establece el ancho del lienzo igual al ancho de la ventana
-  canvas.height = window.innerHeight; // Establece la altura del lienzo igual a la altura de la ventana
+   // Establece la altura del lienzo igual a la altura de la ventana
 }
 
 // Llama a la función resizeCanvas() cuando la ventana se redimensiona
