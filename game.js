@@ -13,6 +13,7 @@ const gapHeight = 150; // Espacio constante entre las tuberías
 var pipes = [];
 var gameOver = false;
 var score = 0;
+var maxScore = 0
 function generatePipe() {
   // Si ya hay tuberías en la matriz pipes, calculamos la posición x de la nueva tubería
   var x = canvas.width;
@@ -79,7 +80,7 @@ document.addEventListener("keydown", function (event) {
     jumpSound.play();
   }
 });
-document.addEventListener("touchend", function () {
+document.addEventListener("touchstart", function () {
   jump();
   jumpSound.currentTime = 0;
   jumpSound.play();
@@ -116,7 +117,7 @@ function drawBird() {
   ctx.rotate(rotation);
 
   // Dibujar la imagen del pájaro
-  var birdWidth = 40; // Ancho deseado
+  var birdWidth = 50; // Ancho deseado
   var birdHeight = 40; // Alto deseado
   ctx.drawImage(
     flappyImage,
@@ -158,6 +159,10 @@ function update() {
         if (birdY - 10 < pipe.gapY || birdY + 10 > pipe.gapY + gapHeight) {
           crashSound.currentTime = 0;
           crashSound.play();
+          if (score > maxScore) {
+          maxScore = 0
+          maxScore += score
+          }
           endGame(); // Llamada a endGame() después de reproducir el sonido del choque
         }
       }
@@ -213,6 +218,7 @@ function draw() {
 
     // Dibuja el texto "Game Over" con borde
     ctx.strokeText("Game Over", canvas.width / 2 - 120, canvas.height / 2);
+    ctx.strokeText("Game Over", canvas.width / 2 - 110, canvas.height / 2);
     // Dibuja el texto "Game Over" normal
     ctx.fillText("Game Over", canvas.width / 2 - 120, canvas.height / 2);
 
@@ -223,6 +229,8 @@ function draw() {
     // Configura el tamaño del borde del texto para "touch to restart"
     ctx.lineWidth = 6;
     // Dibuja el texto "touch to restart" con borde
+
+
     ctx.strokeText(
       "touch  to restart",
       canvas.width / 2 - 180,
@@ -234,6 +242,32 @@ function draw() {
       canvas.width / 2 - 180,
       canvas.height / 2 + 50
     );
+
+    ctx.strokeText(
+      "touch  to restart",
+      canvas.width / 2 - 170,
+      canvas.height / 2 + 50
+    );
+    // Dibuja el texto "touch to restart" normal
+    ctx.fillText(
+      "touch  to restart",
+      canvas.width / 2 - 180,
+      canvas.height / 2 + 50
+    );
+
+
+   // Dibuja el texto "Score" con borde
+ctx.strokeText("Score: " + score, 10, 30);
+// Dibuja el texto "Score" normal
+ctx.fillText("Score: " + score, 10, 30);
+
+// Dibuja el texto "Max Score" con borde
+ctx.strokeText("Max Score: " + maxScore, 10, 60);
+// Dibuja el texto "Max Score" normal
+ctx.fillText("Max Score: " + maxScore, 10, 60);
+
+
+
   }
 }
 
