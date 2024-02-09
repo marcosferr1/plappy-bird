@@ -67,6 +67,8 @@ flappyImage.src = "flappy.png";
 function jump() {
   if (!gameOver) {
     velocity = jumpStrength;
+    jumpSound.currentTime = 0;
+    jumpSound.play();
   } else {
     reset();
   }
@@ -76,22 +78,18 @@ function jump() {
 document.addEventListener("keydown", function (event) {
   if (event.code === "Space") {
     jump();
-    jumpSound.currentTime = 0;
-    jumpSound.play();
+
   }
 });
 document.addEventListener("touchstart", function () {
   jump();
-  jumpSound.currentTime = 0;
-  jumpSound.play();
+
 });
 
 // Manejador de eventos para saltar al hacer clic en la pantalla
 document.addEventListener("click", function () {
   jump();
 
-  jumpSound.currentTime = 0;
-  jumpSound.play();
 });
 
 var rotation = 0;
