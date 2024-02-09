@@ -26,14 +26,27 @@ function generatePipe() {
 }
 
 // Manejador de eventos para saltar
+function jump() {
+  if (!gameOver) {
+    velocity = jumpStrength;
+  } else {
+    reset();
+  }
+}
+
+// Manejador de eventos para saltar al presionar la tecla de espacio
 document.addEventListener("keydown", function (event) {
   if (event.code === "Space") {
-    if (!gameOver) {
-      velocity = jumpStrength;
-    } else {
-      reset();
-    }
+    jump();
   }
+});
+canvas.addEventListener("touchstart", function() {
+  jump();
+});
+
+// Manejador de eventos para saltar al hacer clic en la pantalla
+canvas.addEventListener("click", function() {
+  jump();
 });
 
 // Función para dibujar el pájaro

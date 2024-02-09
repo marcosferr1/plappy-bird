@@ -1,4 +1,11 @@
 {
+  "name": "mi-aplicacion",
+  "version": "1.0.0",
+  "description": "Descripción de tu aplicación",
+  "main": "server.js", 
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "express": "^4.18.2"
   }
