@@ -81,15 +81,13 @@ document.addEventListener("keydown", function (event) {
 
   }
 });
-document.addEventListener("touchstart", function () {
+document.addEventListener("touchstart", function (event) {
   jump();
-
 });
 
 // Manejador de eventos para saltar al hacer clic en la pantalla
-document.addEventListener("click", function () {
+document.addEventListener("click", function (event) {
   jump();
-
 });
 
 var rotation = 0;
