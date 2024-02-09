@@ -14,6 +14,17 @@ var pipes = [];
 var gameOver = false;
 var score = 0;
 
+function resizeCanvas() {
+  canvas.width = window.innerWidth; // Establece el ancho del lienzo igual al ancho de la ventana
+  canvas.height = window.innerHeight; // Establece la altura del lienzo igual a la altura de la ventana
+}
+
+// Llama a la función resizeCanvas() cuando la ventana se redimensiona
+window.addEventListener('resize', resizeCanvas);
+
+// Llama a resizeCanvas() cuando la página se carga por primera vez
+window.addEventListener('load', resizeCanvas);
+
 function generatePipe() {
     var minY = 50; // Altura mínima para la parte superior de la tubería
     var maxY = canvas.height - gapHeight - 50; // Altura máxima para la parte inferior de la tubería
