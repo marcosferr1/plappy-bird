@@ -81,7 +81,7 @@ document.addEventListener("keydown", function (event) {
 
   }
 });
-document.addEventListener("touchstart", function(event) {
+document.addEventListener("touchend", function(event) {
   // Evita el comportamiento predeterminado de la pantalla táctil
   event.preventDefault();
   jump();
