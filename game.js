@@ -8,32 +8,53 @@ var birdY = canvas.height / 2;
 var gravity = 0.5;
 var velocity = 0;
 var jumpStrength = -8;
-var pipeWidth = 80 ;
+var pipeWidth = 80;
 const gapHeight = 150; // Espacio constante entre las tuberías
 var pipes = [];
 var gameOver = false;
 var score = 0;
+function generatePipe() {
+  // Si ya hay tuberías en la matriz pipes, calculamos la posición x de la nueva tubería
+  var x = canvas.width;
+  if (pipes.length > 0) {
+      // La posición x será la posición x de la última tubería más el ancho de la tubería más un espacio constante
+      x = pipes[pipes.length - 1].x + pipeWidth + 200; // 200 es el espacio constante entre tuberías
+  }
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth; // Establece el ancho del lienzo igual al ancho de la ventana
-   // Establece la altura del lienzo igual a la altura de la ventana
+  var minY = 50; // Altura mínima para la parte superior de la tubería
+  var maxY = canvas.height - gapHeight - 50; // Altura máxima para la parte inferior de la tubería
+  var gapY = Math.floor(Math.random() * (maxY - minY + 1)) + minY; // Genera una altura aleatoria dentro del rango
+
+  pipes.push({
+      x: x,
+      gapY: gapY,
+  });
 }
 
-// Llama a la función resizeCanvas() cuando la ventana se redimensiona
-window.addEventListener('resize', resizeCanvas);
+function drawPipes() {
+  ctx.fillStyle = "green"; // Color de las tuberías
+  ctx.strokeStyle = "black"; // Color del borde de las tuberías
+  ctx.lineWidth = 2; // Grosor del borde de las tuberías
 
-// Llama a resizeCanvas() cuando la página se carga por primera vez
-window.addEventListener('load', resizeCanvas);
+  pipes.forEach(function (pipe) {
+      // Dibuja el tubo superior
+      ctx.fillRect(pipe.x, 0, pipeWidth, pipe.gapY);
+      ctx.strokeRect(pipe.x, 0, pipeWidth, pipe.gapY);
 
-function generatePipe() {
-    var minY = 50; // Altura mínima para la parte superior de la tubería
-    var maxY = canvas.height - gapHeight - 50; // Altura máxima para la parte inferior de la tubería
-    var gapY = Math.floor(Math.random() * (maxY - minY + 1)) + minY; // Genera una altura aleatoria dentro del rango
-
-    pipes.push({
-        x: canvas.width,
-        gapY: gapY
-    });
+      // Dibuja el tubo inferior
+      ctx.fillRect(
+          pipe.x,
+          pipe.gapY + gapHeight, // Ajusta la posición vertical para el tubo inferior
+          pipeWidth,
+          canvas.height - (pipe.gapY + gapHeight)
+      );
+      ctx.strokeRect(
+          pipe.x,
+          pipe.gapY + gapHeight, // Ajusta la posición vertical para el tubo inferior
+          pipeWidth,
+          canvas.height - (pipe.gapY + gapHeight)
+      );
+  });
 }
 
 // Manejador de eventos para saltar
@@ -51,12 +72,12 @@ document.addEventListener("keydown", function (event) {
     jump();
   }
 });
-canvas.addEventListener("touchstart", function() {
+canvas.addEventListener("touchstart", function () {
   jump();
 });
 
 // Manejador de eventos para saltar al hacer clic en la pantalla
-canvas.addEventListener("click", function() {
+canvas.addEventListener("click", function () {
   jump();
 });
 
@@ -68,22 +89,7 @@ function drawBird() {
   ctx.fill();
 }
 
-// Función para dibujar las tuberías
-function drawPipes() {
-    ctx.fillStyle = "green"; // Color de las tuberías
-    ctx.strokeStyle = "black"; // Color del borde de las tuberías
-    ctx.lineWidth = 2; // Grosor del borde de las tuberías
 
-    pipes.forEach(function (pipe) {
-        // Dibuja el tubo superior
-        ctx.fillRect(pipe.x, 0, pipeWidth, pipe.gapY);
-        ctx.strokeRect(pipe.x, 0, pipeWidth, pipe.gapY);
-
-        // Dibuja el tubo inferior
-        ctx.fillRect(pipe.x, pipe.gapY + gapHeight, pipeWidth, canvas.height - (pipe.gapY + gapHeight));
-        ctx.strokeRect(pipe.x, pipe.gapY + gapHeight, pipeWidth, canvas.height - (pipe.gapY + gapHeight));
-    });
-}
 
 // Función para actualizar la posición del pájaro y las tuberías
 function update() {
@@ -134,10 +140,10 @@ function draw() {
   ctx.fillText("Score: " + score, 10, 30);
   if (gameOver) {
     ctx.fillStyle = "red";
-    ctx.font = "48px Arial";
+    ctx.font = "48px arial";
     ctx.fillText("Game Over", canvas.width / 2 - 120, canvas.height / 2);
     ctx.fillText(
-      "Press Space to restart",
+      "touch  to restart",
       canvas.width / 2 - 180,
       canvas.height / 2 + 50
     );
