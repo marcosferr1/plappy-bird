@@ -79,15 +79,16 @@ document.addEventListener("keydown", function (event) {
     jumpSound.play();
   }
 });
-canvas.addEventListener("touchstart", function () {
+document.addEventListener("touchend", function () {
   jump();
   jumpSound.currentTime = 0;
   jumpSound.play();
 });
 
 // Manejador de eventos para saltar al hacer clic en la pantalla
-canvas.addEventListener("click", function () {
+document.addEventListener("click", function () {
   jump();
+  
   jumpSound.currentTime = 0;
   jumpSound.play();
 });
