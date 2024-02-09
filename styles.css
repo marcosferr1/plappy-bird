@@ -5,7 +5,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-   
+    font-family: "Press Start 2P";
     background-color: rgb(54, 69, 69);/* Ajustar la imagen de fondo para cubrir toda la pantalla */
 }
 

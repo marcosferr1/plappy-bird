@@ -95,7 +95,6 @@ document.addEventListener("click", function () {
 
 var rotation = 0;
 
-
 // Función para dibujar el pájaro
 function drawBird() {
   // Guardar la configuración de transformación actual
@@ -105,9 +104,11 @@ function drawBird() {
   ctx.translate(birdX, birdY);
 
   // Rotar la imagen del pájaro según la dirección del movimiento
-  if (velocity < 0) { // Si el pájaro está subiendo
+  if (velocity < 0) {
+    // Si el pájaro está subiendo
     rotation = -Math.PI / 6; // Rotar hacia arriba
-  } else { // Si el pájaro está cayendo
+  } else {
+    // Si el pájaro está cayendo
     rotation = Math.PI / 4; // Rotar hacia abajo
   }
 
@@ -117,7 +118,13 @@ function drawBird() {
   // Dibujar la imagen del pájaro
   var birdWidth = 40; // Ancho deseado
   var birdHeight = 40; // Alto deseado
-  ctx.drawImage(flappyImage, -birdWidth / 2, -birdHeight / 2, birdWidth, birdHeight);
+  ctx.drawImage(
+    flappyImage,
+    -birdWidth / 2,
+    -birdHeight / 2,
+    birdWidth,
+    birdHeight
+  );
 
   // Restaurar la configuración de transformación
   ctx.restore();
@@ -181,14 +188,47 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBird();
   drawPipes();
-  ctx.fillStyle = "black";
-  ctx.font = "24px Arial";
 
+  // Configura el color del texto normal
+  ctx.fillStyle = "white";
+  // Configura el color del borde del texto
+  ctx.strokeStyle = "black";
+  // Configura el grosor del borde del texto
+  ctx.lineWidth = 6;
+
+  // Dibuja el texto "Score" con borde
+  ctx.strokeText("Score: " + score, 10, 30);
+  // Dibuja el texto "Score" normal
   ctx.fillText("Score: " + score, 10, 30);
+
   if (gameOver) {
-    ctx.fillStyle = "red";
-    ctx.font = "48px arial";
+    // Configura el color del texto normal para "Game Over"
+    ctx.fillStyle = "white";
+    // Configura el color del borde del texto para "Game Over"
+    ctx.strokeStyle = "black";
+    // Configura el tamaño del borde del texto para "Game Over"
+    ctx.lineWidth = 6;
+    // Configura la fuente para "Game Over"
+    ctx.font = "20px 'Press Start 2P', cursive";
+
+    // Dibuja el texto "Game Over" con borde
+    ctx.strokeText("Game Over", canvas.width / 2 - 120, canvas.height / 2);
+    // Dibuja el texto "Game Over" normal
     ctx.fillText("Game Over", canvas.width / 2 - 120, canvas.height / 2);
+
+    // Configura el color del texto normal para "touch to restart"
+    ctx.fillStyle = "white";
+    // Configura el color del borde del texto para "touch to restart"
+    ctx.strokeStyle = "black";
+    // Configura el tamaño del borde del texto para "touch to restart"
+    ctx.lineWidth = 6;
+    // Dibuja el texto "touch to restart" con borde
+    ctx.strokeText(
+      "touch  to restart",
+      canvas.width / 2 - 180,
+      canvas.height / 2 + 50
+    );
+    // Dibuja el texto "touch to restart" normal
     ctx.fillText(
       "touch  to restart",
       canvas.width / 2 - 180,
