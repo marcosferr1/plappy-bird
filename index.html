@@ -8,6 +8,18 @@
 </head>
 <body>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <audio id="jumpSound" src="./jump.wav" preload="auto"></audio>
+    <audio id="passSound" src="./score.mp3" preload="auto"></audio>
+    <audio id="crashSound" src="./crash.mp3" preload="auto"></audio>
+
+    <script>
+        // Función para manejar el evento de carga del documento
+        document.addEventListener("DOMContentLoaded", function() {
+            // Coloca aquí tu código JavaScript que utiliza el elemento de audio
+            var jumpSound = document.getElementById("jumpSound");
+            jumpSound.play(); // Ejemplo de reproducción del sonido al cargar la página
+        });
+    </script>
     <script src="game.js"></script>
 </body>
 </html>

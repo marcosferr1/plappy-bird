@@ -17,8 +17,8 @@ function generatePipe() {
   // Si ya hay tuberías en la matriz pipes, calculamos la posición x de la nueva tubería
   var x = canvas.width;
   if (pipes.length > 0) {
-      // La posición x será la posición x de la última tubería más el ancho de la tubería más un espacio constante
-      x = pipes[pipes.length - 1].x + pipeWidth + 200; // 200 es el espacio constante entre tuberías
+    // La posición x será la posición x de la última tubería más el ancho de la tubería más un espacio constante
+    x = pipes[pipes.length - 1].x + pipeWidth + 200; // 200 es el espacio constante entre tuberías
   }
 
   var minY = 50; // Altura mínima para la parte superior de la tubería
@@ -26,8 +26,8 @@ function generatePipe() {
   var gapY = Math.floor(Math.random() * (maxY - minY + 1)) + minY; // Genera una altura aleatoria dentro del rango
 
   pipes.push({
-      x: x,
-      gapY: gapY,
+    x: x,
+    gapY: gapY,
   });
 }
 
@@ -37,30 +37,36 @@ function drawPipes() {
   ctx.lineWidth = 2; // Grosor del borde de las tuberías
 
   pipes.forEach(function (pipe) {
-      // Dibuja el tubo superior
-      ctx.fillRect(pipe.x, 0, pipeWidth, pipe.gapY);
-      ctx.strokeRect(pipe.x, 0, pipeWidth, pipe.gapY);
+    // Dibuja el tubo superior
+    ctx.fillRect(pipe.x, 0, pipeWidth, pipe.gapY);
+    ctx.strokeRect(pipe.x, 0, pipeWidth, pipe.gapY);
 
-      // Dibuja el tubo inferior
-      ctx.fillRect(
-          pipe.x,
-          pipe.gapY + gapHeight, // Ajusta la posición vertical para el tubo inferior
-          pipeWidth,
-          canvas.height - (pipe.gapY + gapHeight)
-      );
-      ctx.strokeRect(
-          pipe.x,
-          pipe.gapY + gapHeight, // Ajusta la posición vertical para el tubo inferior
-          pipeWidth,
-          canvas.height - (pipe.gapY + gapHeight)
-      );
+    // Dibuja el tubo inferior
+    ctx.fillRect(
+      pipe.x,
+      pipe.gapY + gapHeight, // Ajusta la posición vertical para el tubo inferior
+      pipeWidth,
+      canvas.height - (pipe.gapY + gapHeight)
+    );
+    ctx.strokeRect(
+      pipe.x,
+      pipe.gapY + gapHeight, // Ajusta la posición vertical para el tubo inferior
+      pipeWidth,
+      canvas.height - (pipe.gapY + gapHeight)
+    );
   });
 }
 
 // Manejador de eventos para saltar
+var jumpSound = document.getElementById("jumpSound");
+var scoresound = document.getElementById("passSound");
+var crashSound = document.getElementById("crashSound");
 function jump() {
   if (!gameOver) {
     velocity = jumpStrength;
+    // Reiniciar la reproducción del sonido, aunque ya esté en curso
+    jumpSound.currentTime = 0;
+    jumpSound.play();
   } else {
     reset();
   }
@@ -89,8 +95,6 @@ function drawBird() {
   ctx.fill();
 }
 
-
-
 // Función para actualizar la posición del pájaro y las tuberías
 function update() {
   if (!gameOver) {
@@ -99,20 +103,27 @@ function update() {
 
     if (birdY > canvas.height || birdY < 0) {
       endGame();
+      crashSound.currentTime = 0;
+      crashSound.play();
     }
 
     pipes.forEach(function (pipe) {
       pipe.x -= 2;
 
       if (birdX + 10 > pipe.x && birdX - 10 < pipe.x + pipeWidth) {
+        crashSound.currentTime = 0;
+            crashSound.play();
         if (birdY - 10 < pipe.gapY || birdY + 10 > pipe.gapY + gapHeight) {
-          endGame();
+            
+            endGame(); // Llamada a endGame() después de reproducir el sonido del choque
         }
-      }
+    }
 
       if (birdX > pipe.x + pipeWidth && !pipe.passed) {
         score++;
         pipe.passed = true;
+        scoresound.currentTime = 0;
+        scoresound.play();
       }
     });
 
@@ -152,6 +163,7 @@ function draw() {
 
 // Función para terminar el juego
 function endGame() {
+  
   gameOver = true;
 }
 
