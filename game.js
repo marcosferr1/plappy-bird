@@ -107,6 +107,15 @@ function update() {
     velocity += gravity;
     birdY += velocity;
 
+    // Eliminar tubos fuera del canvas
+    for (var i = 0; i < pipes.length; i++) {
+      pipes[i].x -= 2;
+      if (pipes[i].x < -pipeWidth * 2) {
+        pipes.splice(i, 1); // Eliminar el tubo fuera de la pantalla
+        i--; // Ajustar el índice después de eliminar el tubo
+      }
+    }
+
     if (birdY > canvas.height || birdY < 0) {
       endGame();
       crashSound.currentTime = 0;
