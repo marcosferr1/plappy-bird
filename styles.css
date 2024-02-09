@@ -13,7 +13,16 @@ canvas {
 }
 
 #gameCanvas {
- /* Establece el ancho en 600 píxeles */
-    /* Agrega un borde de 2 píxeles de ancho de color negro */
-    /* Otros estilos */
+    display: block;
+    margin: auto;
+    background-color: #f0f0f0; /* Color de fondo opcional para el lienzo */
+    /* Estilos adicionales según sea necesario */
+}
+
+/* Estilos adicionales para dispositivos móviles */
+@media screen and (max-width: 600px) {
+    #gameCanvas {
+        width: 100%;
+        height: auto;
+    }
 }
