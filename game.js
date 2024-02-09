@@ -5,7 +5,7 @@ var ctx = canvas.getContext("2d");
 // Variables del juego
 var birdX = 50;
 var birdY = canvas.height / 2;
-var gravity = 0.5;
+var gravity = 0.4;
 var velocity = 0;
 var jumpStrength = -8;
 var pipeWidth = 80;
@@ -61,11 +61,11 @@ function drawPipes() {
 var jumpSound = document.getElementById("jumpSound");
 var scoresound = document.getElementById("passSound");
 var crashSound = document.getElementById("crashSound");
+var flappyImage = new Image();
+flappyImage.src = "flappy.png";
 function jump() {
   if (!gameOver) {
     velocity = jumpStrength;
-
-
   } else {
     reset();
   }
@@ -88,17 +88,39 @@ document.addEventListener("touchend", function () {
 // Manejador de eventos para saltar al hacer clic en la pantalla
 document.addEventListener("click", function () {
   jump();
-  
+
   jumpSound.currentTime = 0;
   jumpSound.play();
 });
 
+var rotation = 0;
+
+
 // Función para dibujar el pájaro
 function drawBird() {
-  ctx.fillStyle = "yellow";
-  ctx.beginPath();
-  ctx.arc(birdX, birdY, 10, 0, Math.PI * 2);
-  ctx.fill();
+  // Guardar la configuración de transformación actual
+  ctx.save();
+
+  // Establecer el punto de origen de la rotación en la posición del pájaro
+  ctx.translate(birdX, birdY);
+
+  // Rotar la imagen del pájaro según la dirección del movimiento
+  if (velocity < 0) { // Si el pájaro está subiendo
+    rotation = -Math.PI / 6; // Rotar hacia arriba
+  } else { // Si el pájaro está cayendo
+    rotation = Math.PI / 4; // Rotar hacia abajo
+  }
+
+  // Aplicar la rotación al contexto de dibujo
+  ctx.rotate(rotation);
+
+  // Dibujar la imagen del pájaro
+  var birdWidth = 40; // Ancho deseado
+  var birdHeight = 40; // Alto deseado
+  ctx.drawImage(flappyImage, -birdWidth / 2, -birdHeight / 2, birdWidth, birdHeight);
+
+  // Restaurar la configuración de transformación
+  ctx.restore();
 }
 
 // Función para actualizar la posición del pájaro y las tuberías
@@ -126,13 +148,12 @@ function update() {
       pipe.x -= 2;
 
       if (birdX + 10 > pipe.x && birdX - 10 < pipe.x + pipeWidth) {
-   
         if (birdY - 10 < pipe.gapY || birdY + 10 > pipe.gapY + gapHeight) {
           crashSound.currentTime = 0;
           crashSound.play();
-            endGame(); // Llamada a endGame() después de reproducir el sonido del choque
+          endGame(); // Llamada a endGame() después de reproducir el sonido del choque
         }
-    }
+      }
 
       if (birdX > pipe.x + pipeWidth && !pipe.passed) {
         score++;
@@ -178,7 +199,6 @@ function draw() {
 
 // Función para terminar el juego
 function endGame() {
-  
   gameOver = true;
 }
 
