@@ -64,7 +64,7 @@ var crashSound = document.getElementById("crashSound");
 function jump() {
   if (!gameOver) {
     velocity = jumpStrength;
-    // Reiniciar la reproducción del sonido, aunque ya esté en curso
+
     jumpSound.currentTime = 0;
     jumpSound.play();
   } else {
