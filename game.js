@@ -111,10 +111,10 @@ function update() {
       pipe.x -= 2;
 
       if (birdX + 10 > pipe.x && birdX - 10 < pipe.x + pipeWidth) {
-        crashSound.currentTime = 0;
-            crashSound.play();
+   
         if (birdY - 10 < pipe.gapY || birdY + 10 > pipe.gapY + gapHeight) {
-            
+          crashSound.currentTime = 0;
+          crashSound.play();
             endGame(); // Llamada a endGame() después de reproducir el sonido del choque
         }
     }
