@@ -8,8 +8,15 @@ var birdY = canvas.height / 2;
 var gravity = 0.4;
 var velocity = 0;
 var jumpStrength = -8;
+// Velocidad de tubos, px por frame a 60fps. Se recalcula cada frame desde el
+// score, así reset() no tiene que acordarse de volverla a 0.
+var pipeSpeedStart = 2; // arranque
+var pipeSpeedRamp = 0.05; // cuánto acelera por tubo pasado
+var pipeSpeedMax = 4.5; // techo, arriba de esto es injugable
+var pipeSpeed = pipeSpeedStart;
 var pipeWidth = 80;
-const gapHeight = 150; // Espacio constante entre las tuberías
+const gapHeight = 150; // Hueco vertical por el que pasa el pájaro
+const pipeSpacing = 210; // Espacio horizontal entre tuberías consecutivas
 var pipes = [];
 var gameOver = false;
 var score = 0;
@@ -19,7 +26,7 @@ function generatePipe() {
   var x = canvas.width;
   if (pipes.length > 0) {
     // La posición x será la posición x de la última tubería más el ancho de la tubería más un espacio constante
-    x = pipes[pipes.length - 1].x + pipeWidth + 200; // 200 es el espacio constante entre tuberías
+    x = pipes[pipes.length - 1].x + pipeWidth + pipeSpacing;
   }
 
   var minY = 50; // Altura mínima para la parte superior de la tubería
@@ -64,11 +71,16 @@ var scoresound = document.getElementById("passSound");
 var crashSound = document.getElementById("crashSound");
 var flappyImage = new Image();
 flappyImage.src = "flappy.png";
+// En móvil play() rechaza si lo interrumpe otro play(). Sin catch spamea la consola.
+function playSound(el) {
+  el.currentTime = 0;
+  el.play().catch(function () {});
+}
+
 function jump() {
   if (!gameOver) {
     velocity = jumpStrength;
-    jumpSound.currentTime = 0;
-    jumpSound.play();
+    playSound(jumpSound);
   } else {
     reset();
   }
@@ -78,19 +90,19 @@ function jump() {
 document.addEventListener("keydown", function (event) {
   if (event.code === "Space") {
     jump();
-
   }
 });
-document.addEventListener("touchend", function(event) {
-  // Evita el comportamiento predeterminado de la pantalla táctil
-  event.preventDefault();
-  jump();
-});
 
-// Manejador de eventos para saltar al hacer clic en la pantalla
-document.addEventListener("click", function (event) {
-  jump();
-});
+// pointerdown cubre mouse + touch + pen con un solo listener, y sin los 300ms
+// de delay que el navegador mete antes de disparar click en móvil.
+document.addEventListener(
+  "pointerdown",
+  function (event) {
+    event.preventDefault();
+    jump();
+  },
+  { passive: false }
+);
 
 var rotation = 0;
 
@@ -130,46 +142,36 @@ function drawBird() {
 }
 
 // Función para actualizar la posición del pájaro y las tuberías
-function update() {
-  if (!gameOver) {
-    velocity += gravity;
-    birdY += velocity;
+var lastTime = 0;
 
-    // Eliminar tubos fuera del canvas
-    for (var i = 0; i < pipes.length; i++) {
-      pipes[i].x -= 2;
-      if (pipes[i].x < -pipeWidth * 2) {
-        pipes.splice(i, 1); // Eliminar el tubo fuera de la pantalla
-        i--; // Ajustar el índice después de eliminar el tubo
-      }
-    }
+function update(now) {
+  // dt = 1 a 60fps. Clamp a 3 para que un tab en background no teletransporte al pájaro.
+  var dt = lastTime ? Math.min((now - lastTime) / (1000 / 60), 3) : 1;
+  lastTime = now;
+
+  if (!gameOver) {
+    velocity += gravity * dt;
+    birdY += velocity * dt;
 
     if (birdY > canvas.height || birdY < 0) {
       endGame();
-      crashSound.currentTime = 0;
-      crashSound.play();
     }
 
+    pipeSpeed = Math.min(pipeSpeedStart + score * pipeSpeedRamp, pipeSpeedMax);
+
     pipes.forEach(function (pipe) {
-      pipe.x -= 2;
+      pipe.x -= pipeSpeed * dt;
 
       if (birdX + 10 > pipe.x && birdX - 10 < pipe.x + pipeWidth) {
         if (birdY - 10 < pipe.gapY || birdY + 10 > pipe.gapY + gapHeight) {
-          crashSound.currentTime = 0;
-          crashSound.play();
-          if (score > maxScore) {
-          maxScore = 0
-          maxScore += score
-          }
-          endGame(); // Llamada a endGame() después de reproducir el sonido del choque
+          endGame();
         }
       }
 
       if (birdX > pipe.x + pipeWidth && !pipe.passed) {
         score++;
         pipe.passed = true;
-        scoresound.currentTime = 0;
-        scoresound.play();
+        playSound(scoresound);
       }
     });
 
@@ -271,7 +273,10 @@ ctx.fillText("Max Score: " + maxScore, 10, 60);
 
 // Función para terminar el juego
 function endGame() {
+  if (gameOver) return; // El forEach de tubos puede llamar acá más de una vez por frame
   gameOver = true;
+  if (score > maxScore) maxScore = score;
+  playSound(crashSound);
 }
 
 // Función para reiniciar el juego
